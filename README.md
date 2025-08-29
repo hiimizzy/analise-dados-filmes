@@ -38,12 +38,12 @@ Como Executar?
 1. Clone o repositório:
 git clone https://github.com/seu-usuario/analise-dados-filmes-.git 
 
-cd imdb-dashboard
+cd analise-dados-filmes
 
 2. Instale as dependências:
 pip install -r requirements.txt
 
-3. Execute
+3. Execute esse comando para visualizar o dashboard:
 streamlit run app.py
 
 4.Acessar o dashboard no navegador:
