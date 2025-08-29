@@ -1,18 +1,19 @@
+#Desafio Ciencia de dados.
 import streamlit as st
 import pandas as pd
 import plotly.express as px
 
-# --- Configuração da página ---
+# Aqui está a configuração da página
 st.set_page_config(
     page_title="Dashboard IMDb",
     page_icon="🎬",
     layout="wide",
 )
 
-# Carregamento dos dados
+# Arquivo fornecido para realizar o carregamento dos dados.
 df = pd.read_csv("desafio_indicium_imdb.csv")
 
-# Limpeza e transformação de dados
+# Aqui está a limpeza e transformação de dados
 df['Gross'] = df['Gross'].str.replace(',', '').str.replace('$', '').astype(float)
 df['Runtime'] = df['Runtime'].str.replace(' min', '').astype(float)
 df['Released_Year'] = pd.to_numeric(df['Released_Year'], errors='coerce')
@@ -24,7 +25,7 @@ st.sidebar.header("🔍 Filtros")
 anos_disponiveis = sorted(df['Released_Year'].dropna().unique())
 anos_selecionados = st.sidebar.multiselect('Ano de Lançamento', anos_disponiveis, default=anos_disponiveis[-5:])
 
-# Filtro de Gênero
+# Filtro de Gênero dos Filmes
 generos_disponiveis = sorted(set([genero for sublist in df['Genre'].str.split(', ') for genero in sublist]))
 generos_selecionados = st.sidebar.multiselect('Gênero', generos_disponiveis, default=['Drama'])
 
@@ -36,14 +37,14 @@ diretores_selecionados = st.sidebar.multiselect('Diretor', diretores_disponiveis
 certificacoes = sorted(df['Certificate'].dropna().unique())
 certificacoes_selecionadas = st.sidebar.multiselect('Certificação', certificacoes, default=certificacoes)
 
-# --- Filtragem do DataFrame ---
+#Filtragem do DataFrame
 df_filtrado = df[
     (df['Released_Year'].isin(anos_selecionados)) &
     (df['Certificate'].isin(certificacoes_selecionadas)) &
     (df['Director'].isin(diretores_selecionados) if diretores_selecionados else True)
 ]
 
-# Filtro adicional por gênero
+# Filtro de gênero do filme:
 if generos_selecionados:
     df_filtrado = df_filtrado[df_filtrado['Genre'].apply(
         lambda x: any(genero in x for genero in generos_selecionados)
@@ -69,7 +70,7 @@ col4.metric('Diretor Mais Frequente', diretor_mais_frequente)
 
 st.markdown('---')
 
-# --- Gráficos ---
+#Gráficos para facilitar a visualização
 st.subheader('Visualizações')
 col_graf1, col_graf2 = st.columns(2)
 
@@ -114,6 +115,6 @@ with col_graf4:
                       labels={'Released_Year': 'Ano', 'IMDB_Rating': 'Nota Média'})
         st.plotly_chart(fig, use_container_width=True)
 
-# --- Tabela de Dados ---
+#Tabela de Dados 
 st.subheader("Tabela de Filmes")
 st.dataframe(df_filtrado[['Series_Title', 'Released_Year', 'Genre', 'Director', 'IMDB_Rating', 'Gross']])
