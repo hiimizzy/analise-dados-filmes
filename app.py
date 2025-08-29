@@ -5,7 +5,7 @@ import plotly.express as px
 
 # Aqui está a configuração da página
 st.set_page_config(
-    page_title="Dashboard IMDb",
+    page_title=" PProductions",
     page_icon="🎬",
     layout="wide",
 )
@@ -50,7 +50,7 @@ if generos_selecionados:
         lambda x: any(genero in x for genero in generos_selecionados)
     )]
 
-# --- Métricas Principais ---
+#Métricas Principais
 st.header("🎬 Dashboard IMDb - Análise de Filmes")
 st.markdown('Explore dados de filmes do IMDb. Utilize os filtros à esquerda para refinar sua análise.')
 
@@ -70,7 +70,7 @@ col4.metric('Diretor Mais Frequente', diretor_mais_frequente)
 
 st.markdown('---')
 
-#Gráficos para facilitar a visualização
+#Gráficos para facilitar a visualização:
 st.subheader('Visualizações')
 col_graf1, col_graf2 = st.columns(2)
 
