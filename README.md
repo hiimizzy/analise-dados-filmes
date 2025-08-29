@@ -36,7 +36,7 @@ pip (gerenciador de pacotes do Python)
 
 Como Executar?
 1. Clone o repositório:
-git clone https://github.com/seu-usuario/imdb-dashboard.git
+git clone https://github.com/seu-usuario/analise-dados-filmes-.git 
 cd imdb-dashboard
 
 2. Instale as dependências:
