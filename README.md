@@ -49,13 +49,6 @@ streamlit run app.py
 4.Acessar o dashboard no navegador:
 http://localhost:8501
 
-Estrutura do projeto:
-analise-dados-filmes/
-├── app.py              # Código principal da aplicação
-├── requirements.txt    # Dependências do projeto
-├── desafio_indicium_imdb.csv  # Dataset do IMDb
-└── README.md          # Este arquivo
-
 Como usar?
 1.Utilize os filtros na barra lateral para selecionar:
 
