@@ -76,3 +76,6 @@ Evolução das avaliações ao longo do tempo
 
 📊 Dataset
 O projeto utiliza o dataset desafio_indicium_imdb.csv.
+
+Link do dashboard:
+https://4es3i5xrmdnjpztzrdyez6.streamlit.app/
