@@ -4,7 +4,7 @@ Um dashboard interativo para análise de dados de filmes do IMDb, construído co
 📊 Funcionalidades
 Filtros interativos: Ano de lançamento, gênero, diretor e certificação
 
-Métricas principais: Nota média, bilheteria total, filme mais bem avaliado
+Métricas principais: Nota média, bilheteria total, filme mais bem avaliado, diretor mais frequente e filme mais popular
 
 Visualizações gráficas:
 
@@ -16,16 +16,28 @@ Distribuição das avaliações
 
 Evolução temporal das avaliações
 
+Análise de texto (NLP): Nuvem de palavras e análise de palavras mais frequentes nas sinopses (overviews) dos filmes
+
+Modelo preditivo: Previsão de notas IMDB usando Random Forest
+
 Tabela interativa com dados detalhados dos filmes
 
 🛠️ Tecnologias Utilizadas
 Python 3.7+
 
-Pandas 2.2.3
+Pandas
 
-Streamlit 1.44.1
+Streamlit
 
-Plotly 5.24.1
+Plotly
+
+Scikit-learn
+
+Matplotlib
+
+Seaborn
+
+WordCloud
 
 📋 Pré-requisitos
 Antes de executar o projeto, certifique-se de ter instalado:
@@ -78,4 +90,3 @@ Evolução das avaliações ao longo do tempo
 O projeto utiliza o dataset desafio_indicium_imdb.csv.
 
 Link do dashboard:
-https://4es3i5xrmdnjpztzrdyez6.streamlit.app/
