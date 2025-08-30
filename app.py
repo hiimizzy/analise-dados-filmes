@@ -30,18 +30,6 @@ df['Gross'] = df['Gross'].str.replace(',', '').str.replace('$', '').astype(float
 df['Runtime'] = df['Runtime'].str.replace(' min', '').astype(float)
 df['Released_Year'] = pd.to_numeric(df['Released_Year'], errors='coerce')
 
-# Verificar se o filme The Shawshank Redemption está presente
-shawshank_exists = 'The Shawshank Redemption' in df['Series_Title'].values
-st.sidebar.write(f"The Shawshank Redemption no dataset: {shawshank_exists}")
-
-if not shawshank_exists:
-    st.sidebar.warning("Filme não encontrado. Verifique o nome exato no CSV.")
-    # Mostrar filmes similares
-    similar_titles = df[df['Series_Title'].str.contains('Shawshank', case=False)]['Series_Title']
-    if not similar_titles.empty:
-        st.sidebar.write("Títulos similares encontrados:")
-        st.sidebar.write(similar_titles.tolist())
-
 # Barra lateral - filtros
 st.sidebar.header("🔍 Filtros")
 
@@ -110,7 +98,8 @@ with col_graf1:
                      y='Series_Title', 
                      orientation='h',
                      title='Top 10 Filmes por Avaliação',
-                     labels={'IMDB_Rating': 'Nota IMDb', 'Series_Title': 'Filme'})
+                     labels={'IMDB_Rating': 'Nota IMDb', 'Series_Title': 'Filme'},
+                     color_discrete_sequence=["orange"])
         st.plotly_chart(fig, use_container_width=True)
 
 with col_graf2:
@@ -119,7 +108,8 @@ with col_graf2:
                          x='Runtime',
                          y='IMDB_Rating',
                          title='Relação entre Duração e Avaliação',
-                         labels={'Runtime': 'Duração (minutes)', 'IMDB_Rating': 'Nota IMDb'})
+                         labels={'Runtime': 'Duração (minutes)', 'IMDB_Rating': 'Nota IMDb'},
+                         color_discrete_sequence=["orange"])
         st.plotly_chart(fig, use_container_width=True)
 
 col_graf3, col_graf4 = st.columns(2)
@@ -130,7 +120,8 @@ with col_graf3:
                            x='IMDB_Rating',
                            nbins=20,
                            title='Distribuição das Avaliações',
-                           labels={'IMDB_Rating': 'Nota IMDb'})
+                           labels={'IMDB_Rating': 'Nota IMDb'},
+                           color_discrete_sequence=["orange"])
         st.plotly_chart(fig, use_container_width=True)
 
 with col_graf4:
@@ -140,10 +131,11 @@ with col_graf4:
                       x='Released_Year',
                       y='IMDB_Rating',
                       title='Evolução da Avaliação Média por Ano',
-                      labels={'Released_Year': 'Ano', 'IMDB_Rating': 'Nota Média'})
+                      labels={'Released_Year': 'Ano', 'IMDB_Rating': 'Nota Média'},
+                      color_discrete_sequence=["orange"])
         st.plotly_chart(fig, use_container_width=True)
 
-# Análise de Texto (NLP)
+# Análise de Texto (NLP) e com grafico:
 st.markdown('---')
 st.subheader('📊 Análise de Texto - Overview dos Filmes')
 
@@ -186,7 +178,8 @@ if not df_filtrado.empty:
                 
                 common_df = pd.DataFrame(common_words, columns=['Palavra', 'Frequência'])
                 fig = px.bar(common_df, x='Palavra', y='Frequência', 
-                             title=f'Top 10 Palavras em Filmes de {genre_option}')
+                             title=f'Top 10 Palavras em Filmes de {genre_option}',
+                             color_discrete_sequence=["orange"])
                 st.plotly_chart(fig, use_container_width=True)
     except ImportError:
         st.warning("Biblioteca WordCloud não instalada. Execute: pip install wordcloud")
@@ -368,7 +361,7 @@ if not df_filtrado.empty:
 else:
     st.warning("Nenhum filme encontrado para os filtros selecionados.")
 
-# Informações técnicas
+# Exclarecimentos:
 st.sidebar.markdown('---')
 st.sidebar.info("""
 **Desafio Ciência de Dados**
