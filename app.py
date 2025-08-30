@@ -30,6 +30,18 @@ df['Gross'] = df['Gross'].str.replace(',', '').str.replace('$', '').astype(float
 df['Runtime'] = df['Runtime'].str.replace(' min', '').astype(float)
 df['Released_Year'] = pd.to_numeric(df['Released_Year'], errors='coerce')
 
+# Verificar se o filme The Shawshank Redemption está presente
+shawshank_exists = 'The Shawshank Redemption' in df['Series_Title'].values
+st.sidebar.write(f"The Shawshank Redemption no dataset: {shawshank_exists}")
+
+if not shawshank_exists:
+    st.sidebar.warning("Filme não encontrado. Verifique o nome exato no CSV.")
+    # Mostrar filmes similares
+    similar_titles = df[df['Series_Title'].str.contains('Shawshank', case=False)]['Series_Title']
+    if not similar_titles.empty:
+        st.sidebar.write("Títulos similares encontrados:")
+        st.sidebar.write(similar_titles.tolist())
+
 # Barra lateral - filtros
 st.sidebar.header("🔍 Filtros")
 
@@ -107,7 +119,7 @@ with col_graf2:
                          x='Runtime',
                          y='IMDB_Rating',
                          title='Relação entre Duração e Avaliação',
-                         labels={'Runtime': 'Duração (minutos)', 'IMDB_Rating': 'Nota IMDb'})
+                         labels={'Runtime': 'Duração (minutes)', 'IMDB_Rating': 'Nota IMDb'})
         st.plotly_chart(fig, use_container_width=True)
 
 col_graf3, col_graf4 = st.columns(2)
@@ -131,50 +143,53 @@ with col_graf4:
                       labels={'Released_Year': 'Ano', 'IMDB_Rating': 'Nota Média'})
         st.plotly_chart(fig, use_container_width=True)
 
-# Análise de Texto (NLP) - Coluna Overview
+# Análise de Texto (NLP)
 st.markdown('---')
 st.subheader('📊 Análise de Texto - Overview dos Filmes')
 
-#Conferir 
 if not df_filtrado.empty:
+    try:
+        from wordcloud import WordCloud
+        
+        df_filtrado['Overview'] = df_filtrado['Overview'].fillna('')
 
-    df_filtrado['Overview'] = df_filtrado['Overview'].fillna('')
+        st.write("**Nuvem de Palavras das Overviews**")
+        all_overviews = " ".join(overview for overview in df_filtrado['Overview'])
+        wordcloud = WordCloud(width=800, height=400, background_color='white').generate(all_overviews)
+        
+        fig, ax = plt.subplots(figsize=(10, 5))
+        ax.imshow(wordcloud, interpolation='bilinear')
+        ax.axis('off')
+        st.pyplot(fig)
 
-    st.write("**Nuvem de Palavras das Overviews**")
-    all_overviews = " ".join(overview for overview in df_filtrado['Overview'])
-    wordcloud = WordCloud(width=800, height=400, background_color='white').generate(all_overviews)
-    
-    fig, ax = plt.subplots(figsize=(10, 5))
-    ax.imshow(wordcloud, interpolation='bilinear')
-    ax.axis('off')
-    st.pyplot(fig)
-
-    st.write("**Análise de Palavras por Gênero**")
-    genre_option = st.selectbox('Selecione um gênero para análise:', generos_disponiveis)
-    
-    if genre_option:
-        genre_movies = df_filtrado[df_filtrado['Genre'].str.contains(genre_option, na=False)]
-        if not genre_movies.empty:
-            genre_overviews = " ".join(overview for overview in genre_movies['Overview'])
-            genre_wordcloud = WordCloud(width=800, height=400, background_color='white').generate(genre_overviews)
-            
-            fig, ax = plt.subplots(figsize=(10, 5))
-            ax.imshow(genre_wordcloud, interpolation='bilinear')
-            ax.axis('off')
-            ax.set_title(f'Palavras Mais Frequentes em Filmes de {genre_option}')
-            st.pyplot(fig)
-            
-            # Top palavras
-            from collections import Counter
-            import re
-            
-            words = re.findall(r'\w+', genre_overviews.lower())
-            common_words = Counter(words).most_common(10)
-            
-            common_df = pd.DataFrame(common_words, columns=['Palavra', 'Frequência'])
-            fig = px.bar(common_df, x='Palavra', y='Frequência', 
-                         title=f'Top 10 Palavras em Filmes de {genre_option}')
-            st.plotly_chart(fig, use_container_width=True)
+        st.write("**Análise de Palavras por Gênero**")
+        genre_option = st.selectbox('Selecione um gênero para análise:', generos_disponiveis)
+        
+        if genre_option:
+            genre_movies = df_filtrado[df_filtrado['Genre'].str.contains(genre_option, na=False)]
+            if not genre_movies.empty:
+                genre_overviews = " ".join(overview for overview in genre_movies['Overview'])
+                genre_wordcloud = WordCloud(width=800, height=400, background_color='white').generate(genre_overviews)
+                
+                fig, ax = plt.subplots(figsize=(10, 5))
+                ax.imshow(genre_wordcloud, interpolation='bilinear')
+                ax.axis('off')
+                ax.set_title(f'Palavras Mais Frequentes em Filmes de {genre_option}')
+                st.pyplot(fig)
+                
+                # Top palavras
+                from collections import Counter
+                import re
+                
+                words = re.findall(r'\w+', genre_overviews.lower())
+                common_words = Counter(words).most_common(10)
+                
+                common_df = pd.DataFrame(common_words, columns=['Palavra', 'Frequência'])
+                fig = px.bar(common_df, x='Palavra', y='Frequência', 
+                             title=f'Top 10 Palavras em Filmes de {genre_option}')
+                st.plotly_chart(fig, use_container_width=True)
+    except ImportError:
+        st.warning("Biblioteca WordCloud não instalada. Execute: pip install wordcloud")
 
 # Modelo Preditivo e Previsão
 st.markdown('---')
@@ -192,6 +207,10 @@ if st.button('Treinar Modelo Preditivo'):
         features = ['Runtime', 'Meta_score', 'No_of_Votes', 'Gross'] + categorical_cols
         X = df_model[features].fillna(0)
         y = df_model['IMDB_Rating']
+        
+        # Salvar X para usar na previsão
+        st.session_state['X_columns'] = X.columns.tolist()
+        st.session_state['df_model'] = df_model
         
         # Treinar modelo
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
@@ -224,21 +243,47 @@ st.subheader('🔮 Previsão para "The Shawshank Redemption"')
 try:
     model = joblib.load('imdb_rating_predictor.pkl')
     
-    # Dados do filme
+    # Dados do filme The Shawshank Redemption
     shawshank_data = {
+        'Series_Title': 'The Shawshank Redemption',
+        'Released_Year': 1994,
+        'Certificate': 'A',
         'Runtime': 142,
+        'Genre': 'Drama',
+        'Overview': 'Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.',
         'Meta_score': 80.0,
+        'Director': 'Frank Darabont',
+        'Star1': 'Tim Robbins',
+        'Star2': 'Morgan Freeman',
+        'Star3': 'Bob Gunton',
+        'Star4': 'William Sadler',
         'No_of_Votes': 2343110,
         'Gross': 28341469,
+        'IMDB_Rating': 9.3  # Nota real para comparação
     }
     
-    for col in ['Certificate', 'Genre', 'Director', 'Star1', 'Star2', 'Star3', 'Star4']:
-        shawshank_data[col] = 0  
+    # Criar um DataFrame temporário com este filme
+    df_temp = pd.concat([df, pd.DataFrame([shawshank_data])], ignore_index=True)
     
-    # Aqui é feito a previsão do filme:
-    shawshank_df = pd.DataFrame([shawshank_data])
-    predicted_rating = model.predict(shawshank_df)[0]
-    actual_rating = df[df['Series_Title'] == 'The Shawshank Redemption']['IMDB_Rating'].values[0]
+    # Pré-processamento igual ao feito no treinamento
+    df_model_temp = df_temp.copy()
+    categorical_cols = ['Certificate', 'Genre', 'Director'] + [f'Star{i}' for i in range(1, 5)]
+    for col in categorical_cols:
+        df_model_temp[col] = df_model_temp[col].astype('category').cat.codes
+
+    # Separar a linha do filme
+    shawshank_row = df_model_temp[df_model_temp['Series_Title'] == 'The Shawshank Redemption'].iloc[0]
+    
+    # Selecionar as features
+    features = ['Runtime', 'Meta_score', 'No_of_Votes', 'Gross'] + categorical_cols
+    X_columns = st.session_state.get('X_columns', features)  # Se não tiver, usa a lista features
+    
+    # Garantir a mesma ordem
+    shawshank_features = shawshank_row[X_columns].fillna(0).values.reshape(1, -1)
+    
+    # Fazer a previsão
+    predicted_rating = model.predict(shawshank_features)[0]
+    actual_rating = shawshank_row['IMDB_Rating']
     
     col1, col2 = st.columns(2)
     col1.metric("Nota Real", f"{actual_rating:.1f}")
@@ -249,10 +294,13 @@ try:
     
 except FileNotFoundError:
     st.warning("Treine o modelo primeiro para fazer previsões.")
+except Exception as e:
+    st.error(f"Erro ao fazer previsão: {str(e)}")
+    st.info("Certifique-se de treinar o modelo primeiro e que todas as colunas necessárias estão presentes.")
 
 # Respostas às perguntas do desafio:
 st.markdown('---')
-
+st.subheader('📋 Respostas às Perguntas do Desafio')
 
 with st.expander("1. Qual filme recomendaria para uma pessoa que você não conhece?"):
     st.write(f"""
@@ -263,27 +311,18 @@ with st.expander("1. Qual filme recomendaria para uma pessoa que você não conh
     - Esta escolha é baseada na análise dos dados fornecidos no desafio.
     """)
 
-st.subheader('📋 Respostas às Perguntas do Desafio')
-#Qual filme você recomendaria para uma pessoa que você não conhece?
-with st.expander("1. Qual filme recomendaria para uma pessoa que você não conhece?"):
-    st.write("""
-    Recomendo **"🃏The Shawshank Redemption"** porque:
-    - Tem a nota IMDB mais alta (9.3)
-    - É um drama, gênero com ampla aceitação
-    - Tem um número muito alto de votos (2.3M+), indicando popularidade
-    - Tem meta score alto (80), indicando aprovação da crítica
-    - Faturamento sólido para seu orçamento
-    """)
-
 with st.expander("2. Quais são os principais fatores relacionados com alta expectativa de faturamento?"):
-    st.write("""
-    Com base na análise de correlação:
-    - **Número de votos**: correlação de 0.81 (mais forte)
-    - **Nota IMDB**: correlação de 0.72
-    - **Meta score**: correlação de 0.68
-    - **Diretor de renome**: aumenta faturamento em ~35%
-    - **Elenco estrelado**: aumenta faturamento em ~28%
-    """)
+    # Calcular correlações em tempo real
+    numeric_cols = ['Gross', 'IMDB_Rating', 'Meta_score', 'No_of_Votes', 'Runtime']
+    correlation_matrix = df[numeric_cols].corr()
+    gross_correlations = correlation_matrix['Gross'].sort_values(ascending=False)
+    
+    st.write("Com base na análise de correlação dos dados:")
+    for feature, correlation in gross_correlations.items():
+        if feature != 'Gross':
+            st.write(f"- **{feature}**: correlação de {correlation:.2f}")
+    
+    st.write("\nEstes valores são calculados a partir do dataset fornecido e podem variar com os filtros aplicados.")
 
 with st.expander("3. Quais insights podem ser tirados com a coluna Overview?"):
     st.write("""
@@ -329,7 +368,7 @@ if not df_filtrado.empty:
 else:
     st.warning("Nenhum filme encontrado para os filtros selecionados.")
 
-# Exclarecimentos:
+# Informações técnicas
 st.sidebar.markdown('---')
 st.sidebar.info("""
 **Desafio Ciência de Dados**
