@@ -190,7 +190,7 @@ st.subheader('🎯 Modelo Preditivo de Notas IMDB')
 
 if st.button('Treinar Modelo Preditivo'):
     with st.spinner('Treinando modelo...'):
-        # Aqui será preparado os dados para modelagem
+        # Preparo dos dados para modelagem
         df_model = df.copy()
 
         categorical_cols = ['Certificate', 'Genre', 'Director'] + [f'Star{i}' for i in range(1, 5)]
@@ -200,8 +200,7 @@ if st.button('Treinar Modelo Preditivo'):
         features = ['Runtime', 'Meta_score', 'No_of_Votes', 'Gross'] + categorical_cols
         X = df_model[features].fillna(0)
         y = df_model['IMDB_Rating']
-        
-        # Salvar X para usar na previsão
+
         st.session_state['X_columns'] = X.columns.tolist()
         st.session_state['df_model'] = df_model
         
@@ -236,7 +235,7 @@ st.subheader('🔮 Previsão para "The Shawshank Redemption"')
 try:
     model = joblib.load('imdb_rating_predictor.pkl')
     
-    # Dados do filme The Shawshank Redemption
+    # Dados do filme 'The Shawshank Redemption' fornecido no documento:
     shawshank_data = {
         'Series_Title': 'The Shawshank Redemption',
         'Released_Year': 1994,
@@ -252,13 +251,12 @@ try:
         'Star4': 'William Sadler',
         'No_of_Votes': 2343110,
         'Gross': 28341469,
-        'IMDB_Rating': 9.3  # Nota real para comparação
+        'IMDB_Rating': 9.3 
     }
     
-    # Criar um DataFrame temporário com este filme
+    # Criar um DataFrame temporário para o filme:
     df_temp = pd.concat([df, pd.DataFrame([shawshank_data])], ignore_index=True)
-    
-    # Pré-processamento igual ao feito no treinamento
+
     df_model_temp = df_temp.copy()
     categorical_cols = ['Certificate', 'Genre', 'Director'] + [f'Star{i}' for i in range(1, 5)]
     for col in categorical_cols:
@@ -274,7 +272,7 @@ try:
     # Garantir a mesma ordem
     shawshank_features = shawshank_row[X_columns].fillna(0).values.reshape(1, -1)
     
-    # Fazer a previsão
+    # Fazer a previsão do filme:
     predicted_rating = model.predict(shawshank_features)[0]
     actual_rating = shawshank_row['IMDB_Rating']
     
@@ -297,7 +295,7 @@ st.subheader('📋 Respostas às Perguntas do Desafio')
 
 with st.expander("1. Qual filme recomendaria para uma pessoa que você não conhece?"):
     st.write(f"""
-    Recomendo **"{filme_mais_popular}"** porque:
+    Recomendo **"🃏{filme_mais_popular}"** pois o filme possui as seguintes características:
     - Maior número de votos: {df[df['Series_Title'] == filme_mais_popular]['No_of_Votes'].values[0]:,} votos
     - Nota IMDB: {df[df['Series_Title'] == filme_mais_popular]['IMDB_Rating'].values[0]}/10
     - Gênero: {df[df['Series_Title'] == filme_mais_popular]['Genre'].values[0]}
@@ -331,7 +329,7 @@ with st.expander("3. Quais insights podem ser tirados com a coluna Overview?"):
 with st.expander("4. Como prever a nota do IMDB?"):
     st.write("""
     - **Tipo de problema**: Regressão
-    - **Modelo escolhido**: Random Forest (melhor para dados tabulares)
+    - **Modelo escolhido**: Random Forest 
     - **Variáveis importantes**: Meta_score, No_of_Votes, Runtime, Director
     - **Métrica de performance**: MAE (Mean Absolute Error)
     """)
@@ -361,7 +359,7 @@ if not df_filtrado.empty:
 else:
     st.warning("Nenhum filme encontrado para os filtros selecionados.")
 
-# Exclarecimentos:
+# Esclarecimentos:
 st.sidebar.markdown('---')
 st.sidebar.info("""
 **Desafio Ciência de Dados**
