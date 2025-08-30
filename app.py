@@ -207,7 +207,7 @@ if st.button('Treinar Modelo Preditivo'):
         joblib.dump(model, 'imdb_rating_predictor.pkl')
         
         st.success(f'Modelo treinado com sucesso! MAE: {mae:.3f}, R²: {r2:.3f}')
-        #importancia 
+        
         feature_importance = pd.DataFrame({
             'feature': X.columns,
             'importance': model.feature_importances_
@@ -217,7 +217,7 @@ if st.button('Treinar Modelo Preditivo'):
                      title='Top 10 Features Mais Importantes')
         st.plotly_chart(fig, use_container_width=True)
 
-# Previsão para The Shawshank Redemption
+# Previsão para o filme The Shawshank Redemption:
 st.markdown('---')
 st.subheader('🔮 Previsão para "The Shawshank Redemption"')
 
@@ -233,16 +233,16 @@ try:
     }
     
     for col in ['Certificate', 'Genre', 'Director', 'Star1', 'Star2', 'Star3', 'Star4']:
-        shawshank_data[col] = 0  # Valor simplificado para demonstração
+        shawshank_data[col] = 0  
     
-    # Fazer previsão
+    # Aqui é feito a previsão do filme:
     shawshank_df = pd.DataFrame([shawshank_data])
     predicted_rating = model.predict(shawshank_df)[0]
     actual_rating = df[df['Series_Title'] == 'The Shawshank Redemption']['IMDB_Rating'].values[0]
     
     col1, col2 = st.columns(2)
     col1.metric("Nota Real", f"{actual_rating:.1f}")
-    col2.metric("Nota Prevista", f"{predicted_rating:.1f}", 
+    col2.metric("Nota Prevista", f"{predicted_rating:.1f}",  
                 f"{predicted_rating - actual_rating:.1f}")
     
     st.write(f"**Diferença**: {abs(predicted_rating - actual_rating):.2f} pontos")
@@ -250,13 +250,24 @@ try:
 except FileNotFoundError:
     st.warning("Treine o modelo primeiro para fazer previsões.")
 
-# Respostas às perguntas do desafio
+# Respostas às perguntas do desafio:
 st.markdown('---')
-st.subheader('📋 Respostas às Perguntas do Desafio')
+
 
 with st.expander("1. Qual filme recomendaria para uma pessoa que você não conhece?"):
+    st.write(f"""
+    Recomendo **"{filme_mais_popular}"** porque:
+    - Maior número de votos: {df[df['Series_Title'] == filme_mais_popular]['No_of_Votes'].values[0]:,} votos
+    - Nota IMDB: {df[df['Series_Title'] == filme_mais_popular]['IMDB_Rating'].values[0]}/10
+    - Gênero: {df[df['Series_Title'] == filme_mais_popular]['Genre'].values[0]}
+    - Esta escolha é baseada na análise dos dados fornecidos no desafio.
+    """)
+
+st.subheader('📋 Respostas às Perguntas do Desafio')
+#Qual filme você recomendaria para uma pessoa que você não conhece?
+with st.expander("1. Qual filme recomendaria para uma pessoa que você não conhece?"):
     st.write("""
-    Recomendo **"The Shawshank Redemption"** porque:
+    Recomendo **"🃏The Shawshank Redemption"** porque:
     - Tem a nota IMDB mais alta (9.3)
     - É um drama, gênero com ampla aceitação
     - Tem um número muito alto de votos (2.3M+), indicando popularidade
