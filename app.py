@@ -11,7 +11,7 @@ st.set_page_config(
 )
 
 # Arquivo fornecido para realizar o carregamento dos dados.
-df = pd.read_csv("desafio_indicium_imdb.csv")
+df = pd.read_csv("desafio_indicium_imdb.csv",index_col=0)
 
 # Aqui está a limpeza e transformação de dados
 df['Gross'] = df['Gross'].str.replace(',', '').str.replace('$', '').astype(float)
@@ -50,23 +50,29 @@ if generos_selecionados:
         lambda x: any(genero in x for genero in generos_selecionados)
     )]
 
-#Métricas Principais
-st.header("🎬 Dashboard IMDb - Análise de Filmes")
-st.markdown('Explore dados de filmes do IMDb. Utilize os filtros à esquerda para refinar sua análise.')
+#Aqui está as métricas principais do Dashboard
+st.header("🎬 Dashboard - Análise de Filmes")
+st.markdown('Explore dados de filmes. Use os filtros à esquerda para refinar sua análise.')
+st.markdown('---')
+
 
 if not df_filtrado.empty:
     nota_media = df_filtrado['IMDB_Rating'].mean()
     bilheteria_total = df_filtrado['Gross'].sum()
     filme_maior_nota = df_filtrado.loc[df_filtrado['IMDB_Rating'].idxmax()]['Series_Title']
     diretor_mais_frequente = df_filtrado['Director'].mode()[0]
+    filme_mais_popular = df_filtrado.loc[df_filtrado['No_of_Votes'].idxmax()]['Series_Title']
 else:
-    nota_media, bilheteria_total, filme_maior_nota, diretor_mais_frequente = 0, 0, 'N/A', 'N/A'
+    nota_media, bilheteria_total, filme_maior_nota, diretor_mais_frequente, filme_mais_popular = 0, 0, 'N/A', 'N/A'
 
-col1, col2, col3, col4 = st.columns(4)
+#Layout
+col1, col2, col3, col4, col5 = st.columns(5)
 col1.metric('Nota Média', f'{nota_media:.2f}')
 col2.metric('Bilheteria Total', f'${bilheteria_total:,.0f}')
 col3.metric('Filme Mais Bem Avaliado', filme_maior_nota)
 col4.metric('Diretor Mais Frequente', diretor_mais_frequente)
+col5.metric('Filme Mais Popular', filme_mais_popular)
+
 
 st.markdown('---')
 
@@ -117,4 +123,45 @@ with col_graf4:
 
 #Tabela de Dados 
 st.subheader("Tabela de Filmes")
-st.dataframe(df_filtrado[['Series_Title', 'Released_Year', 'Genre', 'Director', 'IMDB_Rating', 'Gross']])
+
+
+# Series_Title – Nome do filme
+# Released_Year - Ano de lançamento
+# Certificate - Classificação etária
+# Runtime – Tempo de duração
+# Genre - Gênero
+# IMDB_Rating - Nota do IMDB
+# Overview - Overview do filme
+# Meta_score - Média ponderada de todas as críticas 
+# Director – Diretor
+# Star1 - Ator/atriz #1
+# Star2 - Ator/atriz #2
+# Star3 - Ator/atriz #3
+# Star4 - Ator/atriz #4
+# No_of_Votes - Número de votos
+# Gross - Faturamento
+
+
+if not df_filtrado.empty:
+    st.dataframe(df_filtrado [ [
+    'Series_Title', 
+    'Released_Year', 
+    'Certificate', 
+    'Runtime', 
+    'Genre', 
+    'IMDB_Rating', 
+    'Overview', 
+    'Meta_score', 
+    'Director', 
+    'Star1', 
+    'Star2', 
+    'Star3', 
+    'Star4', 
+    'No_of_Votes', 
+    'Gross'] ] )
+else:
+    st.warning("Nenhum filme encontrado para os filtros selecionados.")
+
+
+#Verificar Dataframe:
+print(df_filtrado.columns)
