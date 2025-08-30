@@ -1,3 +1,10 @@
-pandas==2.2.3
-streamlit==1.44.1
-plotly==5.24.1
+#instalar librerias
+streamlit==1.22.0
+pandas==1.5.3
+plotly==5.13.0
+numpy==1.24.3
+matplotlib==3.7.1
+seaborn==0.12.2
+scikit-learn==1.2.2
+wordcloud==1.9.2
+joblib==1.2.0
