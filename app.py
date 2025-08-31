@@ -217,7 +217,7 @@ if st.button('Treinar Modelo Preditivo'):
         # Salvar modelo
         joblib.dump(model, 'imdb_rating_predictor.pkl')
         
-        st.success(f'Modelo treinado com sucesso! MAE: {mae:.3f}, R²: {r2:.3f}')
+        st.success(f'🎉 Modelo treinado com sucesso! MAE: {mae:.3f}, R²: {r2:.3f}')
         
         feature_importance = pd.DataFrame({
             'feature': X.columns,
@@ -289,13 +289,13 @@ except Exception as e:
     st.error(f"Erro ao fazer previsão: {str(e)}")
     st.info("Certifique-se de treinar o modelo primeiro e que todas as colunas necessárias estão presentes.")
 
-# Respostas às perguntas do desafio:
+# Respostas às perguntas presente no documento do desafio:
 st.markdown('---')
 st.subheader('📋 Respostas às Perguntas do Desafio')
 
-with st.expander("1. Qual filme recomendaria para uma pessoa que você não conhece?"):
+with st.expander("1. Qual filme recomendaria para uma pessoa que você não conhece?"): #inclusive ,joker, é uns dos meus filmes favorito.
     st.write(f"""
-    Recomendo **"🃏{filme_mais_popular}"** pois o filme possui as seguintes características:
+    Recomendo **"🃏{filme_mais_popular}"** pois o filme possui as seguintes características: 
     - Maior número de votos: {df[df['Series_Title'] == filme_mais_popular]['No_of_Votes'].values[0]:,} votos
     - Nota IMDB: {df[df['Series_Title'] == filme_mais_popular]['IMDB_Rating'].values[0]}/10
     - Gênero: {df[df['Series_Title'] == filme_mais_popular]['Genre'].values[0]}
