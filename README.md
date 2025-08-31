@@ -1,5 +1,5 @@
-# analise-dados-filmes
-Um dashboard interativo para análise de dados de filmes do IMDb, construído com Streamlit.
+# analise-dados-filmes 📎
+Um dashboard interativo para análise de dados de filmes!
 
 📊 Funcionalidades
 Filtros interativos: Ano de lançamento, gênero, diretor e certificação
@@ -22,7 +22,7 @@ Modelo preditivo: Previsão de notas IMDB usando Random Forest
 
 Tabela interativa com dados detalhados dos filmes
 
-🛠️ Tecnologias Utilizadas
+🛠️ Tecnologias Utilizadas:
 Python 3.7+
 
 Pandas
@@ -46,7 +46,7 @@ Python 3.7 ou superior
 
 pip (gerenciador de pacotes do Python)
 
-Como Executar?
+Como Executar❓
 1. Clone o repositório:
 git clone https://github.com/seu-usuario/analise-dados-filmes-.git 
 
@@ -61,7 +61,7 @@ streamlit run app.py
 4.Acessar o dashboard no navegador:
 http://localhost:8501
 
-Como usar?
+Como usar❓
 1.Utilize os filtros na barra lateral para selecionar:
 
 Intervalo de anos
