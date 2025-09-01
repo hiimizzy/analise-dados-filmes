@@ -362,7 +362,7 @@ else:
 # Esclarecimentos:
 st.sidebar.markdown('---')
 st.sidebar.info("""
-**Desafio Ciência de Dados**
+**Informações adicionais:**
 \nEste dashboard permite explorar dados de filmes e realizar análises preditivas.
-\nDesenvolvido para o desafio da Indicium.
+\nDesenvolvido para o desafio Ciência de Dados.
 """)
