@@ -1,5 +1,6 @@
 # analise-dados-filmes 📎
 Um dashboard interativo para análise de dados de filmes!
+Link do Dashboard: https://bozho3uiuqx96i9fm8u4qd.streamlit.app/
 
 📊 Funcionalidades
 Filtros interativos: Ano de lançamento, gênero, diretor e certificação
