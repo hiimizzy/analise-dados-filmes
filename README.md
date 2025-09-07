@@ -1,5 +1,5 @@
 # analise-dados-filmes 📎
-Um dashboard interativo para análise de dados de filmes!
+Um dashboard interativo para análise de dados de filmes! <br>
 Link do Dashboard: https://bozho3uiuqx96i9fm8u4qd.streamlit.app/
 
 📊 Funcionalidades
